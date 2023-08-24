@@ -84,6 +84,7 @@ const ProMode = () => {
     window.location.reload();
   };
   const handleScanStart = () => {
+    setScanResult(null);
     startInitiateScan();
     setIssubmitting(true);
     handleScan('start');
