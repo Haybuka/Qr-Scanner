@@ -5,6 +5,9 @@
 /* #html5-qrcode-button-camera-start {
   @apply;
 } */
+* {
+  font-family: 'Poppins', sans-serif;
+}
 img {
   @apply mx-auto;
 }
