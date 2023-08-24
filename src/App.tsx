@@ -10,7 +10,7 @@ function App() {
   return (
     <main className="App h-screen flex justify-center items-center p-3">
       <section className="md:w-[600px]  mx-auto">
-        <Header text="TAP Bus Code SCANNER" />
+        <Header text="Bus Code SCANNER" />
         <ProMode />
       </section>
       <ToastContainer
