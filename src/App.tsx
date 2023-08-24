@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import { ToastContainer } from 'react-toastify';
 import './App.css';
 
 import Header from './components/header';
@@ -14,6 +13,18 @@ function App() {
         <Header text="Scan Bus Code" />
         <ProMode />
       </section>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </main>
   );
 }

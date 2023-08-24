@@ -1,9 +1,15 @@
+import { v4 as uuid } from 'uuid';
+
 import { Html5Qrcode } from 'html5-qrcode';
 import useScanInitiate from '../hooks/useScanInitiate';
 import Button from './button';
 import InfoText from './info';
 import { decodedTextType } from '../App';
 import { useState } from 'react';
+import { _createBusCode } from '../api/createBusCode';
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProMode = () => {
   const { initiate, startInitiateScan, stopInitiateScan } = useScanInitiate();
@@ -13,11 +19,34 @@ const ProMode = () => {
   const handleScan = (type: string) => {
     const html5QrCode = new Html5Qrcode('reader');
     const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+    const sendBusCode = async (busId: string) => {
+      const data = {
+        transId: uuid(),
+        busId,
+      };
+
+      const response = await _createBusCode(data);
+
+      if (response?.error.status !== 400) {
+        //SUCCESFULL
+        toast.success(response.success.message);
+      } else {
+        //ERROR
+        toast.error(response.error.message);
+      }
+
+      setIssubmitting(false);
+    };
+
     const qrCodeSuccess = (decodedText: any, decodedResult: any) => {
+      setIssubmitting(true);
       stopInitiateScan();
       setScanResult(decodedText);
       html5QrCode.stop();
+      sendBusCode(decodedText);
     };
+
     const qrCodeError = (error: any) => {
       setIssubmitting(false);
     };
@@ -30,8 +59,14 @@ const ProMode = () => {
           qrCodeSuccess,
           qrCodeError
         );
+        // html5QrCode.start(
+        //   { facingMode: 'environment' },
+        //   config,
+        //   qrCodeSuccess,
+        //   qrCodeError
+        // );
       } catch (error) {
-        alert('no front camera detected');
+        toast.error('No front camera detected');
         html5QrCode.start(
           { facingMode: 'environment' },
           config,
@@ -41,8 +76,6 @@ const ProMode = () => {
       }
     } else {
       setIssubmitting(false);
-
-      console.log('attempting to stop scanner');
     }
   };
 
@@ -79,38 +112,3 @@ const ProMode = () => {
 };
 
 export default ProMode;
-
-// useEffect(() => {
-//   // let html5QrCode = new Html5Qrcode('reader');
-//   // Html5Qrcode.getCameras()
-//   //   .then((devices) => {
-//   //     if (devices && devices.length) {
-//   //       let cameraId = devices[0].id;
-//   //       setCameraId(cameraId);
-//   //     }
-//   //   })
-//   //   .catch((err) => {
-//   //     handle err
-//   //   });
-
-//   const qrCodeSuccessCallback = (decodedText: any, decodedResult: any) => {
-//     /* handle success */
-//     handleScanResult(decodedText);
-//   };
-//   const qrCodeErrorCallback = (error: any) => {
-//     /* handle success */
-//     // console.log(error);
-//   };
-//   const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-
-//   // If you want to prefer back camera
-//   // html5QrCode.start(
-//   //   { facingMode: 'environment' },
-//   //   config,
-//   //   qrCodeSuccessCallback,
-//   //   qrCodeErrorCallback
-//   // );
-
-//   // html5QrCode.pause();
-//   // if()
-// }, []);
